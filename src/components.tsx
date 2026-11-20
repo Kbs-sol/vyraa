@@ -41,9 +41,8 @@ const json = (o: unknown) => raw(JSON.stringify(o).replace(/</g, '\\u003c'))
 
 /* ---------------------------------------------------------------- marquee */
 export const KEYWORDS = [
-  '100% Natural', 'Herbal', 'Chemical-Free', 'Handmade in Mandamarri', 'Sulphate-Free', 'Paraben-Free',
-  '9 Traditional Herbs', 'Rosemary', 'Bhringraj', 'Amla', 'Neem', 'ISO 9001:2015', 'GMP Certified',
-  'Slow-Infused', 'Free Shipping Across India', 'Truth in Every Drop',
+  '100% Natural', 'Herbal', 'Sulphate Free', 'Paraben Free', 'Chemical Free',
+  'Handmade in India', 'Free Shipping', 'Suitable for All Hair Types', '9 Traditional Herbs', 'Rosemary', 'Bhringraj', 'Amla', 'Neem', 'Truth in Every Drop',
 ]
 export const Marquee = () => {
   const copies = 4
@@ -78,62 +77,32 @@ export const Stars = ({ rating, count }: { rating: number; count: number }) =>
   ) : null
 
 export const ProductCard = ({ f, eager }: { f: Family; eager?: boolean }) => {
-  const mode = cardMode(f)
-  const pills = mode === 'pills' ? cardVariants(f) : []
-  const cur = (mode === 'pills' ? pills.find((v) => v.slug === f.def.slug) || pills[0] : f.def) || f.def
-  const choose = mode === 'choose'
-  const shown = choose ? f.variants.reduce((a, b) => (b.product.price < a.product.price ? b : a)) : cur
-  const sp = shown.product
+  const cur = f.def
+  const sp = cur.product
   const badge = rankBadge(f)
-  const href = `/product/${shown.slug}`
+  const href = `/product/${cur.slug}`
   const eyebrow = eyebrowOf(f)
+  const isDiscounted = sp.mrp && sp.mrp > sp.price
+  const discountPercent = isDiscounted ? Math.round(((sp.mrp! - sp.price) / sp.mrp!) * 100) : 0
+
   return (
-    <article class="pcard" data-fid={f.id} data-cat={f.category} data-mode={mode}>
+    <article class="pcard" data-fid={f.id} data-cat={f.category}>
       <a class="pcard__media" href={href} data-role="link" aria-label={f.title}>
         <img src={sp.images[0]} alt={`${f.title} - ${sp.name}`} width="480" height="480" loading={eager ? 'eager' : 'lazy'} decoding="async" data-role="img" />
         {badge && <span class={`pcard__badge${badge === 'New' ? ' pcard__badge--new' : ''}`}>{badge}</span>}
+        {isDiscounted && <span class="pcard__discount-tag">{discountPercent}% OFF</span>}
       </a>
       <div class="pcard__body">
         {eyebrow && <p class="pcard__eyebrow">{eyebrow}</p>}
         <h3 class="pcard__title"><a href={href} data-role="link">{f.title}</a></h3>
+        <p class="pcard__sub">{f.tagline}</p>
         <div class="pcard__price">
-          {choose && <span class="from">From</span>}
           <span class="price" data-role="price">{inr(sp.price)}</span>
-          {mode !== 'choose' && sizeLine(f, cur) && <span class="size-line" data-role="size">{sizeLine(f, cur)}</span>}
-          {sp.mrp && sp.mrp > sp.price && <span class="mrp" data-role="mrp">{inr(sp.mrp)}</span>}
+          {isDiscounted && <span class="mrp" data-role="mrp">{inr(sp.mrp!)}</span>}
         </div>
-        {mode === 'single' && <p class="pcard__sub">{f.tagline}</p>}
-        {mode === 'pills' && (
-          <div class="pills" role="group" aria-label="Choose size">
-            {pills.map((v) => (
-              <button
-                type="button" class={`pill${v.slug === cur.slug ? ' is-on' : ''}`} aria-pressed={v.slug === cur.slug ? 'true' : 'false'}
-                data-sku={v.slug} data-price={v.product.price} data-mrp={v.product.mrp || ''} data-img={v.product.images[0]} data-href={`/product/${v.slug}`} data-size={sizeLine(f, v)}
-              >
-                {pillText(f, v)}
-              </button>
-            ))}
-          </div>
-        )}
-        {mode === 'select' && (
-          <div class="vsel">
-            <label class="vsel__label" for={`vs-${f.id}`}>{selectLabel(f)}</label>
-            <select id={`vs-${f.id}`} class="vsel__select" data-vselect>
-              {f.variants.map((v) => (
-                <option value={v.slug} selected={v.slug === cur.slug} data-price={v.product.price} data-mrp={v.product.mrp || ''} data-img={v.product.images[0]} data-href={`/product/${v.slug}`} data-size={sizeLine(f, v)}>
-                  {optionText(f, v)}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {choose ? (
-          <a class="btn btn--outline btn--block btn--sm btn--bag" href={`/product/${f.def.slug}`}>Choose options</a>
-        ) : (
-          <button type="button" class="btn btn--outline btn--block btn--sm btn--bag" data-add={cur.slug} data-role="add">
-            <Icon n="bag" />Add to bag
-          </button>
-        )}
+        <button type="button" class="btn btn--block btn--sm btn--bag" data-add={cur.slug} data-role="add">
+          <Icon n="bag" /> Add to cart
+        </button>
       </div>
     </article>
   )
@@ -217,22 +186,19 @@ export const Layout = (p: LayoutProps) => {
           <link rel="icon" href="/static/img/brand/logo.png" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@400;500;600;700&display=swap" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap" />
           <link rel="stylesheet" href="/static/style.css?v=2" />
           {p.ld ? <script type="application/ld+json">{json(p.ld)}</script> : null}
         </head>
         <body class={`${p.hideNav ? '' : 'has-bottom-nav'}${p.buybar ? ' has-buybar' : ''}`}>
           <a class="sr-only" href="#main">Skip to content</a>
           <div class="announce" role="status">
-            <div class="announce__msg"><span>Welcome to Vyra Herbals: <b>Truth in Every Drop!</b></span></div>
-            <div class="announce__msg"><span><b>Free shipping</b> available on all products</span></div>
-            <div class="announce__msg"><span>ISO 9001 : 2015 &amp; GMP Certified</span></div>
+            <div class="announce__msg is-static"><span>Free shipping available on all products</span></div>
           </div>
           <header class="site-header">
             <div class="wrap site-header__row">
               <a class="brand" href="/" aria-label="Vyra Herbals - home">
                 <img src="/static/img/brand/logo.webp" alt="Vyra" width="70" height="34" />
-                <span>HERBALS</span>
               </a>
               <nav class="nav-desktop" aria-label="Main">
                 <a href="/shop" aria-current={p.active === 'shop' ? 'page' : undefined}>Shop</a>

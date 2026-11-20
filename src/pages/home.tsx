@@ -19,51 +19,93 @@ export const Home = () => {
   const explore = families.slice(0, 8)
   return (
     <Layout title="Vyra Herbals | Truth in Every Drop" active="home">
-      {/* 1. category chip rail — compact pills */}
-      <nav class="cat-rail wrap" aria-label="Shop by category">
-        <a class="cat-chip is-on" href="/shop">All</a>
-        {categories.map((c) => (
-          <a class="cat-chip" href={`/category/${c.slug}`}>{c.name}</a>
-        ))}
-      </nav>
+      {/* 1. Category circular rail (compact with images like Avimee reference) */}
+      <section class="cats-mini wrap" aria-label="Shop by category">
+        <div class="cats-mini__rail">
+          {categories.map((c) => (
+            <a class="cat-item" href={`/category/${c.slug}`}>
+              <div class="cat-item__avatar">
+                <img src={c.image} alt={c.name} width="52" height="52" loading="eager" />
+              </div>
+              <span class="cat-item__title">{c.name}</span>
+            </a>
+          ))}
+        </div>
+      </section>
 
-      {/* 2. hero: two before/after images + combo */}
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="wrap hero__grid">
-          <div class="hero__copy">
-            <div class="eyebrow">Handmade in Mandamarri, Telangana</div>
-            <h1 class="display hero__title" id="hero-title">Truth in <em>every drop.</em></h1>
-            <p class="lede">Herbal hair oil, sulphate-free shampoo, mask powder and neem combs, blended by Sahera Banu with traditional herbs. 100% natural, free shipping across India.</p>
-            <div class="hero__ctas">
-              <a class="btn" href="/shop">Shop all products</a>
-              <a class="btn btn--outline" href="/best-sellers">Best sellers</a>
+      {/* 2. Hero Section: Unified Interactive Before/After Proof & Combo Routine Console */}
+      <section class="hero-unified wrap" aria-labelledby="hero-title">
+        <div class="hero-unified__head">
+          <h1 class="hero-unified__title" id="hero-title">
+            Truth in <em>every drop.</em>
+          </h1>
+          <p class="hero-unified__sub">
+            Real customer transformations powered by our 3-step traditional botanical hair routine.
+          </p>
+        </div>
+
+        {/* The Unified Interactive Console */}
+        <div class="proof-combo-unit" id="proof-combo-unit">
+          {/* Top Banner inside Unit */}
+          <div class="unit-header">
+            <div class="unit-header__badge">
+              <span class="pulse-dot"></span>
+              <b>PROVEN RESULTS ROUTINE</b>
             </div>
-            <div class="hero__trust">
-              <span><Icon n="leaf" />100% natural</span>
-              <span><Icon n="shield" />ISO and GMP certified</span>
-              <span><Icon n="truck" />Free shipping</span>
+            <div class="unit-header__savings">
+              Save <b>{off(kit)}%</b> on the Complete Kit
             </div>
           </div>
-          <div class="hero__mosaic">
-            {[0, 1].map((i) => (
-              <figure class="hero__ba" data-zoom={beforeAfter[i]}>
-                <img src={beforeAfter[i]} alt="Customer hair before and after using Vyra" width="480" height="480" loading="eager" />
-                <figcaption>Before / After</figcaption>
-              </figure>
-            ))}
-            <a class="hero__combo" href={`/product/${kit.slug}`}>
-              <img src={kit.images[0]} alt={kit.name} width="360" height="360" loading="eager" />
-              <div class="hero__combo-info">
-                <span class="chip">Combo</span>
-                <strong>{kit.name.replace('Vyra ', '')}</strong>
-                <div class="hero__price">
-                  <b>{inr(kit.price)}</b>
-                  {kit.mrp && <s>{inr(kit.mrp)}</s>}
-                  {off(kit) > 0 && <em>{off(kit)}% off</em>}
+
+          <div class="unit-body">
+            {/* Visual Half: Interactive Before/After Viewer */}
+            <div class="unit-proof" data-zoom="/static/img/ba/hero-ba-2.jpeg">
+              <div class="unit-proof__images">
+                <div class="proof-panel proof-panel--before">
+                  <img src="/static/img/ba/hero-ba-1.jpeg" alt="Customer hair fall & thinning before using Vyra" width="460" height="460" loading="eager" />
+                  <span class="proof-pill proof-pill--before">BEFORE</span>
                 </div>
-                <span class="link-more">Shop the kit <Icon n="arrow" /></span>
+                <div class="proof-panel proof-panel--after">
+                  <img src="/static/img/ba/hero-ba-2.jpeg" alt="Visible new hair growth & density after using Vyra" width="460" height="460" loading="eager" />
+                  <span class="proof-pill proof-pill--after">AFTER (8 WEEKS)</span>
+                </div>
               </div>
-            </a>
+              <div class="unit-proof__caption">
+                <span class="unit-proof__quote">★★★★★ "Visible hair regrowth & fall control in 60 days"</span>
+                <span class="unit-proof__hint">Tap to zoom results <Icon n="arrow" /></span>
+              </div>
+            </div>
+
+            {/* Product & Action Half: Clean Product Buy Card */}
+            <div class="unit-combo">
+              <div class="unit-combo__meta">
+                <span class="chip-sm">ALL-IN-ONE COMBO</span>
+                <h2 class="unit-combo__name">{kit.name}</h2>
+                <div class="price-row" style="margin-top: 4px;">
+                  <b class="price-now">{inr(kit.price)}</b>
+                  {kit.mrp && <s class="price-was">{inr(kit.mrp)}</s>}
+                  <span class="discount-badge">{off(kit)}% OFF</span>
+                </div>
+                <p class="unit-combo__tax">Inclusive of all taxes. Free shipping across India.</p>
+              </div>
+
+              {/* Product Card Actions */}
+              <div class="unit-combo__checkout">
+                <div class="unit-combo__actions">
+                  <button type="button" class="btn btn--block btn--combo-primary" data-add={kit.slug}>
+                    <Icon n="bag" /> Add to bag
+                  </button>
+                  <a class="btn btn--block btn--combo-buy" href={`/product/${kit.slug}`}>
+                    Buy now
+                  </a>
+                </div>
+                <div class="unit-combo__trust-badges">
+                  <span><Icon n="truck" /> Free India Delivery</span>
+                  <span><Icon n="leaf" /> 100% Herbal</span>
+                  <span><Icon n="shield" /> ISO & GMP Certified</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -71,17 +113,19 @@ export const Home = () => {
       {/* 3. flowing keyword marquee */}
       <Marquee />
 
-      {/* 4. shop by concern 2x2 */}
+      {/* 4. shop by concern 2x2 without emojis */}
       <section class="section concerns" aria-labelledby="concern-title">
         <div class="wrap">
           <SectionHead eyebrow="Targeted care" title="Shop by Concern" more={{ href: '/concerns', label: 'View all Concerns' }} />
           <div class="concerns__grid reveal">
             {concerns.map((c) => (
               <a class="concern" href={`/concern/${c.slug}`}>
-                <img src={c.image} alt="" width="360" height="400" loading="lazy" />
-                <span class="concern__emoji" aria-hidden="true">{EMOJI[c.slug]}</span>
+                <img src={c.image} alt={c.name} width="360" height="400" loading="lazy" />
                 <span class="concern__foot">
-                  <span class="concern__name">{c.lines[0]}{c.lines[1] ? <><br />{c.lines[1]}</> : null}</span>
+                  <span class="concern__name-box">
+                    <span class="concern__name">{c.name}</span>
+                    <span class="concern__desc">{c.slug === 'hair-fall' ? 'Root strengthening' : c.slug === 'hair-growth' ? 'Follicle activation' : c.slug === 'dandruff' ? 'Scalp balance' : 'Deep nourishment'}</span>
+                  </span>
                   <span class="concern__go"><Icon n="arrow" /></span>
                 </span>
               </a>
@@ -98,10 +142,10 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 6. before & after */}
+      {/* 6. customer transformation gallery (community proof) */}
       <section class="section ba" aria-labelledby="ba-title">
         <div class="wrap">
-          <SectionHead eyebrow="Real customers" title="Before & After" sub="Photos shared by customers after consistent use. Results vary from person to person." more={{ href: '/reviews', label: 'See more' }} />
+          <SectionHead eyebrow="Real transformations" title="Customer Growth Gallery" sub="Photos shared by our community after 60 to 90 days of consistent herbal ritual." more={{ href: '/reviews', label: 'See more stories' }} />
           <div class="ba__rail" id="ba-rail">
             {beforeAfter.map((src, i) => (
               <figure class="ba__item" data-zoom={src}>

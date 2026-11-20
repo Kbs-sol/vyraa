@@ -56,13 +56,27 @@
   }
   function checkout() {
     if (!cart.length) return;
-    var lines = cart.map(function (l) { var it = DATA.items[l.sku]; return l.qty + ' x ' + it.n + (it.l ? ' (' + it.l + ')' : '') + ' - ' + inr(it.p * l.qty); });
-    if (DATA.checkoutUrl) {
-      var q = cart.map(function (l) { return encodeURIComponent(l.sku) + ':' + l.qty; }).join(',');
-      location.href = DATA.checkoutUrl + (DATA.checkoutUrl.indexOf('?') > -1 ? '&' : '?') + 'items=' + q; return;
+    // Check if Shiprocket Fastrr headless checkout SDK is loaded
+    if (window.Fastrr || window.fastrrCheckout) {
+      var fastrr = window.Fastrr || window.fastrrCheckout;
+      if (typeof fastrr.openCheckout === "function") {
+        fastrr.openCheckout({
+          items: cart.map(function (l) {
+            var it = DATA.items[l.sku];
+            return { sku: l.sku, name: it.n, quantity: l.qty, price: it.p, image: it.i };
+          }),
+          total: total()
+        });
+        return;
+      }
     }
-    var msg = 'Hi Vyra Herbals, I would like to order:\n' + lines.join('\n') + '\nTotal: ' + inr(total());
-    window.open('https://wa.me/' + DATA.whatsapp + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    if (DATA.checkoutUrl) {
+      var q = cart.map(function (l) { return encodeURIComponent(l.sku) + ":" + l.qty; }).join(",");
+      location.href = DATA.checkoutUrl + (DATA.checkoutUrl.indexOf("?") > -1 ? "&" : "?") + "items=" + q; return;
+    }
+    var lines = cart.map(function (l) { var it = DATA.items[l.sku]; return l.qty + " x " + it.n + (it.l ? " (" + it.l + ")" : "") + " - " + inr(it.p * l.qty); });
+    var msg = "Hi Vyra Herbals, I would like to order:\n" + lines.join("\n") + "\nTotal: " + inr(total());
+    window.open("https://wa.me/" + DATA.whatsapp + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
   }
 
   /* ------------------------------------------------------------ overlays */
@@ -289,5 +303,36 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAll(); closeModal(); } });
   window.addEventListener('storage', function (e) { if (e.key === KEY) { load(); render(); } });
 
-  load(); render(); initSearch(); initPdp(); initDots(); initReveal(); initTabs(); initTrack();
+  
+  /* ------------------------------------------------------------ dense hero auto-switch */
+  function initDenseHero() {
+    var s0 = document.getElementById("d-slide-0");
+    var s1 = document.getElementById("d-slide-1");
+    var p0 = document.getElementById("pip-0");
+    var p1 = document.getElementById("pip-1");
+    if (!s0 || !s1) return;
+
+    var cur = 0;
+    var slides = [s0, s1];
+    var pips = [p0, p1];
+
+    window.switchDenseHero = function(idx) {
+      if (idx === cur) return;
+      slides[cur].classList.remove("is-active");
+      if (pips[cur]) pips[cur].classList.remove("is-active");
+      cur = idx;
+      slides[cur].classList.add("is-active");
+      if (pips[cur]) pips[cur].classList.add("is-active");
+    };
+
+    if (p0) p0.addEventListener("click", function() { window.switchDenseHero(0); });
+    if (p1) p1.addEventListener("click", function() { window.switchDenseHero(1); });
+
+    setInterval(function() {
+      var next = (cur + 1) % 2;
+      window.switchDenseHero(next);
+    }, 4000);
+  }
+
+  load(); render(); initSearch(); initPdp(); initDots(); initReveal(); initTabs(); initTrack(); initDenseHero();
 })();
