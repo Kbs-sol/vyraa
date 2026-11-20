@@ -19,27 +19,13 @@ export const Home = () => {
   const explore = families.slice(0, 8)
   return (
     <Layout title="Vyra Herbals | Truth in Every Drop" active="home">
-      {/* 1. category select (derived from all products) */}
-      <section class="cats wrap" aria-label="Shop by category" id="categories-select">
-        <div class="cats__head">
-          <h2 class="cats__title">Shop by category</h2>
-          <a class="link-more" href="/categories">All <Icon n="arrow" /></a>
-        </div>
-        <div class="cats__rail">
-          <a class="cat" href="/shop">
-            <span class="cat__img"><img src="/static/img/brand/og.webp" alt="" width="72" height="72" loading="eager" /></span>
-            <span class="cat__name">All</span>
-            <span class="cat__n">{families.length} products</span>
-          </a>
-          {categories.map((c) => (
-            <a class="cat" href={`/category/${c.slug}`}>
-              <span class="cat__img"><img src={c.image} alt="" width="72" height="72" loading="eager" /></span>
-              <span class="cat__name">{c.name}</span>
-              <span class="cat__n">{countIn(c.slug)} {countIn(c.slug) === 1 ? 'product' : 'products'}</span>
-            </a>
-          ))}
-        </div>
-      </section>
+      {/* 1. category chip rail — compact pills */}
+      <nav class="cat-rail wrap" aria-label="Shop by category">
+        <a class="cat-chip is-on" href="/shop">All</a>
+        {categories.map((c) => (
+          <a class="cat-chip" href={`/category/${c.slug}`}>{c.name}</a>
+        ))}
+      </nav>
 
       {/* 2. hero: two before/after images + combo */}
       <section class="hero" aria-labelledby="hero-title">
@@ -147,7 +133,7 @@ export const Home = () => {
           <SectionHead eyebrow="In their words" title="Customer stories" sub="Short video stories from people who use Vyra every week." />
           <div class="story-rail">
             {stories.map((s, i) => (
-              <button type="button" class="story" data-video={s.drive} aria-label={`Play customer story ${i + 1}`}>
+              <button type="button" class="story" data-video={s.drive} data-youtube={(s as any).youtube || ''} aria-label={`Play customer story ${i + 1}`}>
                 <img src={s.img} alt="" width="190" height="338" loading="lazy" />
                 <span class="story__play"><Icon n="play" fill /></span>
               </button>
@@ -156,29 +142,27 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 9. making video */}
-      <section class="section making" aria-labelledby="making-title">
-        <div class="wrap making__grid">
-          <div class="making__frame" id="making-frame">
-            <img src={site.makingVideoPoster || '/static/img/p/mask-powder-2.webp'} alt="Hand-blending herbs in Mandamarri" width="640" height="400" loading="lazy" />
-            {site.makingVideo ? (
+      {/* 9. making video — hidden when makingVideo is empty */}
+      {site.makingVideo && (
+        <section class="section making" aria-labelledby="making-title">
+          <div class="wrap making__grid">
+            <div class="making__frame" id="making-frame">
+              <img src={site.makingVideoPoster || '/static/img/p/mask-powder-2.webp'} alt="Hand-blending herbs in Mandamarri" width="640" height="400" loading="lazy" />
               <button type="button" class="making__play" data-play-making={site.makingVideo} aria-label="Play the making video"><Icon n="play" fill /></button>
-            ) : (
-              <span class="chip" style="position:absolute;z-index:2;left:14px;top:14px">Video coming soon</span>
-            )}
+            </div>
+            <div>
+              <div class="eyebrow">Behind the scenes</div>
+              <h2 class="h2" style="margin:6px 0 18px">How Vyra is made</h2>
+              <ol class="making__steps">
+                <li><div><b>Sourcing herbs</b><span>Amla, bhringraj, rosemary, hibiscus and curry leaves, selected and dried.</span></div></li>
+                <li><div><b>Slow infusion</b><span>Herbs are steeped into pure coconut oil, not rushed.</span></div></li>
+                <li><div><b>Hand-blended batches</b><span>Small batches, mixed by hand in Mandamarri.</span></div></li>
+                <li><div><b>Checked and packed</b><span>Quality-checked under ISO 9001:2015 and GMP, then shipped free.</span></div></li>
+              </ol>
+            </div>
           </div>
-          <div>
-            <div class="eyebrow">Behind the scenes</div>
-            <h2 class="h2" style="margin:6px 0 18px">How Vyra is made</h2>
-            <ol class="making__steps">
-              <li><div><b>Sourcing herbs</b><span>Amla, bhringraj, rosemary, hibiscus and curry leaves, selected and dried.</span></div></li>
-              <li><div><b>Slow infusion</b><span>Herbs are steeped into pure coconut oil, not rushed.</span></div></li>
-              <li><div><b>Hand-blended batches</b><span>Small batches, mixed by hand in Mandamarri.</span></div></li>
-              <li><div><b>Checked and packed</b><span>Quality-checked under ISO 9001:2015 and GMP, then shipped free.</span></div></li>
-            </ol>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 10. certifications, promises, founder, journey */}
       <section class="section" aria-labelledby="certs-title">
