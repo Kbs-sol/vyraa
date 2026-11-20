@@ -362,3 +362,31 @@ export const rankBadge = (f: Family): string => {
   return d >= 50 ? d + '% off' : ''
 }
 export const productsIn = (cat: string) => families.filter((f) => f.category === cat)
+
+/* ------------------------------------------------------------------ */
+/* Variant selector modes (pills vs. combo dropdown)                    */
+/* ------------------------------------------------------------------ */
+export type CardMode = 'pills' | 'select' | 'choose' | 'single'
+/** Two independent size axes (e.g. oil x shampoo) are shown as one dropdown, like "100 / 200 ml". */
+export const isComboFamily = (f: Family) => f.axes.length === 2 && f.axes[1].key !== 'pack'
+export const cardMode = (f: Family): CardMode => {
+  if (f.variants.length < 2) return 'single'
+  if (isComboFamily(f)) return 'select'
+  return cardVariants(f).length ? 'pills' : 'choose'
+}
+const mlNum = (s: string) => s.replace(/\s*ml$/i, '')
+/** "100 / 200 ml" for combos, otherwise the plain axis value. */
+export const optionText = (f: Family, v: Variant) =>
+  isComboFamily(f) ? `${mlNum(v.attrs[f.axes[0].key])} / ${mlNum(v.attrs[f.axes[1].key])} ml` : variantLabel(f, v)
+export const selectLabel = (f: Family) => (isComboFamily(f) ? f.axes.map((a) => a.label.replace('Hair oil', 'Oil')).join(' / ') + ' sizes' : 'Options')
+/** Small grey line beside the price: "100 ml" or "100 ml oil + 200 ml shampoo". */
+export const sizeLine = (f: Family, v: Variant) => {
+  if (isComboFamily(f)) return `${v.attrs[f.axes[0].key]} ${f.axes[0].key} + ${v.attrs[f.axes[1].key]} ${f.axes[1].key}`
+  return f.axes[0] ? v.attrs[f.axes[0].key] || '' : ''
+}
+export const eyebrowOf = (f: Family) =>
+  ({
+    'hair-oil': 'Pre-wash oil', shampoo: 'Shampoo', 'oil-shampoo-combo': 'Hair oil and shampoo', 'shampoo-massager-combo': 'Shampoo and tool',
+    'hair-care-kit': 'Kit', 'scalp-care-kit': 'Kit', 'hair-growth-kit': 'Kit', 'all-in-one-kit': 'All-in-one kit', 'healthy-hair-kit': 'Three-step kit',
+    'mask-powder': 'Weekly mask', rosemary: 'Herb', 'neem-combs': 'Wooden comb', 'scalp-massager': 'Tool',
+  } as Record<string, string>)[f.id] || ''

@@ -258,9 +258,10 @@ ul { margin: 0; padding: 0; list-style: none; }
 .making__steps span { color: #b9c4b6; font-size: 13.5px; }
 
 /* ---------- certifications / promises ---------- */
-.certs__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.certs__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .cert { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px; display: grid; place-items: center; aspect-ratio: 1; }
-.cert img { max-height: 100%; width: auto; object-fit: contain; }
+.cert { min-width: 0; }
+.cert img { max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
 .promises { display: grid; gap: 12px; margin-top: 26px; }
 .promise { border-radius: var(--radius); padding: 20px 18px; display: grid; gap: 6px; }
 .promise:nth-child(1) { background: var(--peach); }
@@ -558,3 +559,52 @@ body.has-buybar .toast { bottom: calc(92px + env(safe-area-inset-bottom)); }
   .announce__msg:first-child { opacity: 1; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ---------- variant selectors (pills + combo dropdown, per reference) ---------- */
+.pcard__eyebrow { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-top: 2px; }
+.pcard .pcard__title { font-size: 19px; font-weight: 400; }
+.pcard__price { align-items: baseline; margin-top: 0; }
+.pcard__price .price { font-family: var(--serif); font-size: 21px; font-weight: 600; }
+.pcard__price .from { font-size: 12px; color: var(--muted); }
+.size-line { font-size: 12.5px; color: var(--muted); }
+.pcard__price .mrp { font-size: 12px; }
+.pills { gap: 8px; }
+.pill { min-height: 38px; padding: 0 16px; border-radius: 4px; font-size: 13px; font-weight: 500; border: 1px solid var(--line); background: transparent; }
+.pill.is-on { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.btn--bag { border-color: var(--ink); background: transparent; color: var(--ink); font-weight: 500; min-height: 44px; margin-top: auto; }
+.btn--bag .icon { width: 16px; height: 16px; }
+.pcard__body { gap: 8px; }
+.pcard__body > .btn--bag { margin-top: 4px; }
+.vsel { display: grid; gap: 6px; margin-top: 4px; }
+.vsel__label { font-size: 12.5px; color: var(--ink); }
+.vsel__select, .vsel select { appearance: none; -webkit-appearance: none; width: 100%; border: 1px solid var(--ink); border-radius: 4px; background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231b281e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center; padding: 11px 36px 11px 12px; font: inherit; font-size: 14px; color: var(--ink); min-height: 44px; }
+.vsel__select:focus-visible { outline-offset: 2px; }
+/* PDP selectors */
+.opt .pill { border-radius: 4px; min-height: 42px; padding: 0 20px; }
+.pdp__eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.pdp__buy .btn--bag { border-radius: 999px; }
+.pill.is-na { opacity: .4; text-decoration: line-through; }
+
+/* fixes: inline spans inside anchors */
+.cat { display: block; }
+.cat__img { display: block; }
+.cat__n { display: block; }
+.concern__foot, .concern__emoji, .concern__name, .concern__go { box-sizing: border-box; }
+.concern__name { display: block; }
+.post > span { display: block; }
+.connect__card > span:last-child { display: block; }
+.connect__card small { display: block; }
+
+/* fixes: wrap padding overridden by shorthand, rail snap padding */
+.searchbar { padding: 10px 18px 6px; }
+.cats { padding: 14px 18px 6px; }
+@media (min-width: 700px) { .searchbar, .cats { padding-inline: 28px; } }
+.rail, .ba__rail, .story-rail, .tstack, .cats__rail, .chips { scroll-padding-inline: 18px; }
+.link-more { white-space: nowrap; }
+.section__head--row > div { min-width: 0; }
+.suggest { left: 18px; right: 18px; }
+
+/* align Add to bag across a row */
+.pcard__body > .btn--bag { margin-top: auto; }
+.pcard__body > .vsel + .btn--bag, .pcard__body > .pills + .btn--bag { margin-top: auto; }
+.pcard__body { justify-content: flex-start; }

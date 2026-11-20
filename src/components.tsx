@@ -2,6 +2,7 @@ import { raw } from 'hono/html'
 import type { Child } from 'hono/jsx'
 import {
   categories, concerns, clientCatalog, site, families, inr, off, cardVariants, pillText, rankBadge, productsIn,
+  cardMode, eyebrowOf, sizeLine, optionText, selectLabel,
   type Family,
 } from './lib/catalog'
 
@@ -33,9 +34,8 @@ const P: Record<string, string> = {
   pin: '<path d="M12 21s-6.500-5.600-6.500-11a6.500 6.500 0 0 1 13 0c0 5.400-6.500 11-6.500 11Z"/><circle cx="12" cy="10" r="2.400"/>',
   box: '<path d="m3.500 7.500 8.500-4 8.500 4v9l-8.500 4-8.500-4v-9Z"/><path d="m3.500 7.500 8.500 4 8.500-4M12 11.500v9"/>',
 }
-export const Icon = ({ n, fill, cls }: { n: string; fill?: boolean; cls?: string }) => (
-  <svg class={`icon${fill ? ' icon--fill' : ''}${cls ? ' ' + cls : ''}`} viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML={{ __html: P[n] || '' }} />
-)
+export const Icon = ({ n, fill, cls }: { n: string; fill?: boolean; cls?: string }) =>
+  raw(`<svg class="icon${fill ? ' icon--fill' : ''}${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`)
 
 const json = (o: unknown) => raw(JSON.stringify(o).replace(/</g, '\\u003c'))
 
@@ -78,46 +78,61 @@ export const Stars = ({ rating, count }: { rating: number; count: number }) =>
   ) : null
 
 export const ProductCard = ({ f, eager }: { f: Family; eager?: boolean }) => {
-  const pills = cardVariants(f)
-  const cur = pills.find((v) => v.slug === f.def.slug) || pills[0] || f.def
-  const p = cur.product
-  const badge = rankBadge(f)
-  const choose = f.variants.length > 1 && pills.length === 0
+  const mode = cardMode(f)
+  const pills = mode === 'pills' ? cardVariants(f) : []
+  const cur = (mode === 'pills' ? pills.find((v) => v.slug === f.def.slug) || pills[0] : f.def) || f.def
+  const choose = mode === 'choose'
   const shown = choose ? f.variants.reduce((a, b) => (b.product.price < a.product.price ? b : a)) : cur
   const sp = shown.product
+  const badge = rankBadge(f)
   const href = `/product/${shown.slug}`
+  const eyebrow = eyebrowOf(f)
   return (
-    <article class="pcard" data-fid={f.id} data-cat={f.category}>
+    <article class="pcard" data-fid={f.id} data-cat={f.category} data-mode={mode}>
       <a class="pcard__media" href={href} data-role="link" aria-label={f.title}>
         <img src={sp.images[0]} alt={`${f.title} - ${sp.name}`} width="480" height="480" loading={eager ? 'eager' : 'lazy'} decoding="async" data-role="img" />
         {badge && <span class={`pcard__badge${badge === 'New' ? ' pcard__badge--new' : ''}`}>{badge}</span>}
       </a>
       <div class="pcard__body">
+        {eyebrow && <p class="pcard__eyebrow">{eyebrow}</p>}
         <h3 class="pcard__title"><a href={href} data-role="link">{f.title}</a></h3>
-        <p class="pcard__sub">{f.tagline}</p>
-        <Stars rating={f.rating} count={f.reviewCount} />
-        {pills.length > 0 && (
+        <div class="pcard__price">
+          {choose && <span class="from">From</span>}
+          <span class="price" data-role="price">{inr(sp.price)}</span>
+          {mode !== 'choose' && sizeLine(f, cur) && <span class="size-line" data-role="size">{sizeLine(f, cur)}</span>}
+          {sp.mrp && sp.mrp > sp.price && <span class="mrp" data-role="mrp">{inr(sp.mrp)}</span>}
+        </div>
+        {mode === 'single' && <p class="pcard__sub">{f.tagline}</p>}
+        {mode === 'pills' && (
           <div class="pills" role="group" aria-label="Choose size">
             {pills.map((v) => (
               <button
                 type="button" class={`pill${v.slug === cur.slug ? ' is-on' : ''}`} aria-pressed={v.slug === cur.slug ? 'true' : 'false'}
-                data-sku={v.slug} data-price={v.product.price} data-mrp={v.product.mrp || ''} data-img={v.product.images[0]} data-href={`/product/${v.slug}`}
+                data-sku={v.slug} data-price={v.product.price} data-mrp={v.product.mrp || ''} data-img={v.product.images[0]} data-href={`/product/${v.slug}`} data-size={sizeLine(f, v)}
               >
                 {pillText(f, v)}
               </button>
             ))}
           </div>
         )}
-        <div class="pcard__price">
-          {choose && <span class="mrp" style="text-decoration:none">From</span>}
-          <span class="price" data-role="price">{inr(sp.price)}</span>
-          {sp.mrp && sp.mrp > sp.price && <span class="mrp" data-role="mrp">{inr(sp.mrp)}</span>}
-          {off(sp) > 0 && <span class="off" data-role="off">{off(sp)}% off</span>}
-        </div>
+        {mode === 'select' && (
+          <div class="vsel">
+            <label class="vsel__label" for={`vs-${f.id}`}>{selectLabel(f)}</label>
+            <select id={`vs-${f.id}`} class="vsel__select" data-vselect>
+              {f.variants.map((v) => (
+                <option value={v.slug} selected={v.slug === cur.slug} data-price={v.product.price} data-mrp={v.product.mrp || ''} data-img={v.product.images[0]} data-href={`/product/${v.slug}`} data-size={sizeLine(f, v)}>
+                  {optionText(f, v)}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         {choose ? (
-          <a class="btn btn--outline btn--block btn--sm" href={`/product/${f.def.slug}`}>Choose options</a>
+          <a class="btn btn--outline btn--block btn--sm btn--bag" href={`/product/${f.def.slug}`}>Choose options</a>
         ) : (
-          <button type="button" class="btn btn--outline btn--block btn--sm" data-add={cur.slug} data-role="add">Add to bag</button>
+          <button type="button" class="btn btn--outline btn--block btn--sm btn--bag" data-add={cur.slug} data-role="add">
+            <Icon n="bag" />Add to bag
+          </button>
         )}
       </div>
     </article>
@@ -203,7 +218,7 @@ export const Layout = (p: LayoutProps) => {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Inter:wght@400;500;600;700&display=swap" />
-          <link rel="stylesheet" href="/static/style.css?v=1" />
+          <link rel="stylesheet" href="/static/style.css?v=2" />
           {p.ld ? <script type="application/ld+json">{json(p.ld)}</script> : null}
         </head>
         <body class={`${p.hideNav ? '' : 'has-bottom-nav'}${p.buybar ? ' has-buybar' : ''}`}>
@@ -328,7 +343,7 @@ export const Layout = (p: LayoutProps) => {
           <div class="toast" id="toast" role="status" aria-live="polite" />
 
           <script id="vyra-data" type="application/json">{json({ ...clientCatalog(), whatsapp: site.whatsapp, checkoutUrl: '' })}</script>
-          <script src="/static/app.js?v=1" defer />
+          <script src="/static/app.js?v=2" defer />
         </body>
       </html>
     </>
