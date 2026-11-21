@@ -1,3 +1,4 @@
+import { previewHeroHtml } from "./pages/preview-hero"
 import { Hono } from 'hono'
 import { Home } from './pages/home'
 import { ProductPage, NotFound } from './pages/product'
@@ -36,6 +37,8 @@ app.get('/new-launches', (c) => c.redirect('/best-sellers?tab=new'))
 app.get('/reviews', (c) => c.html(<ReviewsPage tab={c.req.query('tab') === 'ba' ? 'ba' : 'stories'} />))
 app.get('/testimonials', (c) => c.redirect('/reviews'))
 app.get('/track-order', (c) => c.html(<TrackOrder />))
+app.get('/preview-hero', (c) => c.html(previewHeroHtml))
+app.get('/preview-hero.html', (c) => c.html(previewHeroHtml))
 
 /* Content pages that stay on the live site until integration */
 for (const path of ['/about', '/blogs', '/blogs/:slug', '/faqs', '/contact', '/privacy-policy', '/terms-conditions']) {
