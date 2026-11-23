@@ -30,7 +30,8 @@ export const products = productsJson as unknown as Product[]
 export const reviews = reviewsJson as unknown as Review[]
 export const testimonials = testimonialsJson as unknown as Testimonial[]
 export const beforeAfter = baJson as string[]
-export const stories = storiesJson as { img: string; drive: string }[]
+export type Story = { img: string; drive: string; youtube: string; title: string; kind: string; desc: string }
+export const stories = storiesJson as Story[]
 
 const bySlugMap = new Map(products.map((p) => [p.slug.toLowerCase(), p]))
 export const productBySlug = (s: string) => bySlugMap.get(s.toLowerCase())
@@ -55,7 +56,8 @@ export const categoryBySlug = (s: string) => {
 /* ------------------------------------------------------------------ */
 /* Concerns                                                            */
 /* ------------------------------------------------------------------ */
-export type Concern = { slug: string; name: string; short: string; lines: [string, string]; image: string; intro: string; tip: string; families: string[] }
+export type Faq = { q: string; a: string }
+export type Concern = { slug: string; name: string; short: string; lines: [string, string]; image: string; intro: string; tip: string; families: string[]; faqs?: Faq[] }
 export const concerns: Concern[] = [
   {
     slug: 'hair-fall',
@@ -66,6 +68,7 @@ export const concerns: Concern[] = [
     intro: 'Strengthen weak roots with a herbal oil routine built around rosemary, bhringraj, amla and curry leaves.',
     tip: 'Warm the oil, massage into the scalp for 5 to 10 minutes, leave for 2 hours or overnight, then wash with a sulphate-free shampoo. Two to three times a week.',
     families: ['hair-oil', 'oil-shampoo-combo', 'healthy-hair-kit', 'hair-growth-kit', 'rosemary', 'all-in-one-kit', 'hair-care-kit'],
+    faqs: [{ q: 'Does Vyra herbal hair oil help with hair fall?', a: 'Vyra Herbal Hair Oil is made with coconut oil, amla, bhringraj, rosemary and curry leaves, herbs traditionally used for scalp care and hair health. Regular oiling and scalp massage supports stronger-feeling hair. Results vary from person to person.' }, { q: 'How long should I use it before judging results?', a: 'Hair grows about 1.25 cm a month, so give a steady routine at least 8 weeks. Use the oil 2 to 3 times a week and wash with a sulphate-free shampoo.' }, { q: 'Should I see a doctor for hair loss?', a: 'Yes, if hair loss is sudden, patchy, or comes with other symptoms. Herbal hair care supports scalp health but is not a medical treatment.' }],
   },
   {
     slug: 'hair-growth',
@@ -76,6 +79,7 @@ export const concerns: Concern[] = [
     intro: 'Support visible thickness with scalp circulation, rosemary and gentle, consistent care.',
     tip: 'Hair grows about 1.25 cm a month. Oil massage improves scalp circulation. Expect visible thickness in 3 to 4 months of steady use.',
     families: ['hair-growth-kit', 'rosemary', 'hair-oil', 'scalp-massager', 'all-in-one-kit', 'oil-shampoo-combo', 'mask-powder'],
+    faqs: [{ q: 'Can a hair oil make hair grow faster?', a: 'No oil can change how fast your hair grows. Scalp massage with a herbal oil supports a healthy scalp, and rosemary has long been used in traditional hair care. Visible thickness takes about 3 to 4 months of steady use.' }, { q: 'What is rosemary leaf for?', a: 'Dried rosemary leaves can be steeped in warm oil or used as a rinse. See our Rosemary Leaves product for how to use them.' }, { q: 'How often should I oil my hair?', a: 'Two to three times a week works for most people. Leave the oil on for 2 hours or overnight, then wash with a mild shampoo.' }],
   },
   {
     slug: 'dandruff',
@@ -86,6 +90,7 @@ export const concerns: Concern[] = [
     intro: 'Clean without stripping. A neem-based, sulphate-free shampoo with a scalp-balancing herbal oil.',
     tip: 'Twice a week: warm oil, massage for 5 minutes, leave 30 to 60 minutes, then wash with the herbal shampoo. Use a scalp massager to lift flakes.',
     families: ['shampoo', 'scalp-care-kit', 'shampoo-massager-combo', 'neem-combs', 'scalp-massager', 'hair-care-kit', 'oil-shampoo-combo'],
+    faqs: [{ q: 'Is the Vyra shampoo sulphate free?', a: 'Yes. Vyra Herbal Shampoo is sulphate-free and paraben-free and made with neem and herbal extracts.' }, { q: 'How often should I wash if I have dandruff flakes?', a: 'Two to three times a week for most people. Massage the scalp gently with a silicone scalp massager to lift flakes before rinsing.' }, { q: 'Is dandruff the same as a dry scalp?', a: 'Not always. If flakes are heavy, itchy or persistent, check with a doctor or dermatologist.' }],
   },
   {
     slug: 'dry-damage',
@@ -96,6 +101,7 @@ export const concerns: Concern[] = [
     intro: 'Moisture and slip for dry, frizzy or breakage-prone hair: herbal oil, a conditioning hair mask and a gentle wash.',
     tip: 'Oil the lengths before a wash, use the mask powder once a week mixed with water or curd, and detangle with a wide-tooth neem comb.',
     families: ['mask-powder', 'hair-oil', 'healthy-hair-kit', 'shampoo', 'hair-care-kit', 'all-in-one-kit', 'neem-combs'],
+    faqs: [{ q: 'What helps dry and frizzy hair?', a: 'Oil the lengths before washing, use a conditioning herbal mask once a week, and detangle with a wide-tooth neem comb.' }, { q: 'How do I use the hair mask powder?', a: 'Mix with water or curd into a smooth paste, apply to damp hair, leave for 20 to 30 minutes and rinse.' }, { q: 'Can I use the oil on hair ends?', a: 'Yes. A few drops on the lengths and ends before a wash helps with softness.' }],
   },
 ]
 export const concernBySlug = (s: string) => {

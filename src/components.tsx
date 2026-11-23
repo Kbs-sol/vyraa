@@ -187,7 +187,7 @@ export const Layout = (p: LayoutProps) => {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap" />
-          <link rel="stylesheet" href="/static/style.css?v=2" />
+          <link rel="stylesheet" href="/static/style.css?v=3" />
           {p.ld ? <script type="application/ld+json">{json(p.ld)}</script> : null}
         </head>
         <body class={`${p.hideNav ? '' : 'has-bottom-nav'}${p.buybar ? ' has-buybar' : ''}`}>
@@ -309,7 +309,7 @@ export const Layout = (p: LayoutProps) => {
           <div class="toast" id="toast" role="status" aria-live="polite" />
 
           <script id="vyra-data" type="application/json">{json({ ...clientCatalog(), whatsapp: site.whatsapp, checkoutUrl: '' })}</script>
-          <script src="/static/app.js?v=2" defer />
+          <script src="/static/app.js?v=3" defer />
         </body>
       </html>
     </>
@@ -354,3 +354,26 @@ export const RitualBanner = () => (
 
 export const countIn = (slug: string) => productsIn(slug).length
 export const allCount = families.length
+
+/* ------------------------------------------------------------------ */
+/* Customer video stories (YouTube Shorts with Drive fallback)          */
+/* ------------------------------------------------------------------ */
+import type { Story } from './lib/catalog'
+export const StoryCard = ({ s, i }: { s: Story; i: number }) => (
+  <figure class="story-card">
+    <button type="button" class="story" data-video={s.drive} data-youtube={s.youtube || ''} aria-label={`Play: ${s.title}`}>
+      <img src={s.img} alt={`${s.title} - customer video thumbnail`} width="190" height="338" loading="lazy" />
+      <span class="story__play"><Icon n="play" fill /></span>
+    </button>
+    <figcaption class="story-card__cap"><small>{s.kind}</small><b>{s.title}</b></figcaption>
+  </figure>
+)
+export const videoLd = (list: Story[]) => ({
+  '@context': 'https://schema.org',
+  '@graph': list.filter((s) => s.youtube).map((s) => ({
+    '@type': 'VideoObject', name: `${s.title} | Vyra Herbals customer review`, description: s.desc,
+    thumbnailUrl: [`https://img.youtube.com/vi/${s.youtube}/hqdefault.jpg`],
+    embedUrl: `https://www.youtube.com/embed/${s.youtube}`, contentUrl: `https://www.youtube.com/shorts/${s.youtube}`,
+    uploadDate: '2025-01-01',
+  })),
+})

@@ -1,8 +1,8 @@
 import {
-  Layout, Icon, Marquee, ProductCard, SectionHead, countIn,
+  Layout, Icon, Marquee, ProductCard, SectionHead, StoryCard, countIn,
 } from '../components'
 import {
-  categories, concerns, bestSellers, families, beforeAfter, stories, testimonials, site, productBySlug, inr, off,
+  categories, concerns, bestSellers, families, beforeAfter, stories, testimonials, site,
 } from '../lib/catalog'
 
 const EMOJI: Record<string, string> = { 'hair-fall': '\u{1F33F}', 'hair-growth': '\u2728', dandruff: '\u2744\uFE0F', 'dry-damage': '\u{1F4A7}' }
@@ -14,7 +14,6 @@ const JOURNAL = [
 ]
 
 export const Home = () => {
-  const kit = productBySlug('vyra-all-in-one-hair-growth-kit')!
   const best = bestSellers().slice(0, 8)
   const explore = families.slice(0, 8)
   return (
@@ -33,81 +32,23 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 2. Hero Section: Unified Interactive Before/After Proof & Combo Routine Console */}
-      <section class="hero-unified wrap" aria-labelledby="hero-title">
-        <div class="hero-unified__head">
-          <h1 class="hero-unified__title" id="hero-title">
-            Truth in <em>every drop.</em>
-          </h1>
-          <p class="hero-unified__sub">
-            Real customer transformations powered by our 3-step traditional botanical hair routine.
-          </p>
+      {/* 2. Hero: only the two before / after images (no product mention) */}
+      <section class="hero-ba wrap" aria-labelledby="hero-title">
+        <div class="hero-ba__head">
+          <h1 class="hero-ba__title" id="hero-title">Truth in <em>every drop.</em></h1>
+          <p class="hero-ba__sub">Real results from real Vyra customers.</p>
         </div>
-
-        {/* The Unified Interactive Console */}
-        <div class="proof-combo-unit" id="proof-combo-unit">
-          {/* Top Banner inside Unit */}
-          <div class="unit-header">
-            <div class="unit-header__badge">
-              <span class="pulse-dot"></span>
-              <b>PROVEN RESULTS ROUTINE</b>
-            </div>
-            <div class="unit-header__savings">
-              Save <b>{off(kit)}%</b> on the Complete Kit
-            </div>
-          </div>
-
-          <div class="unit-body">
-            {/* Visual Half: Interactive Before/After Viewer */}
-            <div class="unit-proof" data-zoom="/static/img/ba/hero-ba-2.jpeg">
-              <div class="unit-proof__images">
-                <div class="proof-panel proof-panel--before">
-                  <img src="/static/img/ba/hero-ba-1.jpeg" alt="Customer hair fall & thinning before using Vyra" width="460" height="460" loading="eager" />
-                  <span class="proof-pill proof-pill--before">BEFORE</span>
-                </div>
-                <div class="proof-panel proof-panel--after">
-                  <img src="/static/img/ba/hero-ba-2.jpeg" alt="Visible new hair growth & density after using Vyra" width="460" height="460" loading="eager" />
-                  <span class="proof-pill proof-pill--after">AFTER (8 WEEKS)</span>
-                </div>
-              </div>
-              <div class="unit-proof__caption">
-                <span class="unit-proof__quote">★★★★★ "Visible hair regrowth & fall control in 60 days"</span>
-                <span class="unit-proof__hint">Tap to zoom results <Icon n="arrow" /></span>
-              </div>
-            </div>
-
-            {/* Product & Action Half: Clean Product Buy Card */}
-            <div class="unit-combo">
-              <div class="unit-combo__meta">
-                <span class="chip-sm">ALL-IN-ONE COMBO</span>
-                <h2 class="unit-combo__name">{kit.name}</h2>
-                <div class="price-row" style="margin-top: 4px;">
-                  <b class="price-now">{inr(kit.price)}</b>
-                  {kit.mrp && <s class="price-was">{inr(kit.mrp)}</s>}
-                  <span class="discount-badge">{off(kit)}% OFF</span>
-                </div>
-                <p class="unit-combo__tax">Inclusive of all taxes. Free shipping across India.</p>
-              </div>
-
-              {/* Product Card Actions */}
-              <div class="unit-combo__checkout">
-                <div class="unit-combo__actions">
-                  <button type="button" class="btn btn--block btn--combo-primary" data-add={kit.slug}>
-                    <Icon n="bag" /> Add to bag
-                  </button>
-                  <a class="btn btn--block btn--combo-buy" href={`/product/${kit.slug}`}>
-                    Buy now
-                  </a>
-                </div>
-                <div class="unit-combo__trust-badges">
-                  <span><Icon n="truck" /> Free India Delivery</span>
-                  <span><Icon n="leaf" /> 100% Herbal</span>
-                  <span><Icon n="shield" /> ISO & GMP Certified</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="hero-ba__pair">
+          <figure class="hero-ba__panel" data-zoom="/static/img/ba/hero-ba-1.jpeg">
+            <img src="/static/img/ba/hero-ba-1.jpeg" alt="Customer hair before using Vyra herbal hair care" width="460" height="460" loading="eager" fetchpriority="high" />
+            <figcaption class="proof-pill proof-pill--before">BEFORE</figcaption>
+          </figure>
+          <figure class="hero-ba__panel" data-zoom="/static/img/ba/hero-ba-2.jpeg">
+            <img src="/static/img/ba/hero-ba-2.jpeg" alt="Same customer's hair after consistent use of Vyra herbal hair care" width="460" height="460" loading="eager" />
+            <figcaption class="proof-pill proof-pill--after">AFTER</figcaption>
+          </figure>
         </div>
+        <p class="hero-ba__note">Real customer photos. Results vary with hair type and consistent use over 8 weeks or more.</p>
       </section>
 
       {/* 3. flowing keyword marquee */}
@@ -176,13 +117,9 @@ export const Home = () => {
         <div class="wrap">
           <SectionHead eyebrow="In their words" title="Customer stories" sub="Short video stories from people who use Vyra every week." />
           <div class="story-rail">
-            {stories.map((s, i) => (
-              <button type="button" class="story" data-video={s.drive} data-youtube={(s as any).youtube || ''} aria-label={`Play customer story ${i + 1}`}>
-                <img src={s.img} alt="" width="190" height="338" loading="lazy" />
-                <span class="story__play"><Icon n="play" fill /></span>
-              </button>
-            ))}
+            {stories.map((s, i) => <StoryCard s={s} i={i} />)}
           </div>
+          <p class="stories__more"><a class="link-more" href="/reviews?tab=videos">Watch all customer videos <Icon n="arrow" /></a></p>
         </div>
       </section>
 

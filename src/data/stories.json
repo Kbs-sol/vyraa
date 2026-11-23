@@ -1,37 +1,58 @@
 [
  {
   "img": "/static/img/stories/story-01.webp",
-  "youtube": "abbqRgZY3Do",
-  "drive": "1AVs29eA5jXKwiwAvRfrrPg6jkSGbDilh"
+  "youtube": "r1SfVUoxXgU",
+  "drive": "1AVs29eA5jXKwiwAvRfrrPg6jkSGbDilh",
+  "title": "Ammamma's favourite hair oil",
+  "kind": "Traditional oiling ritual",
+  "desc": "Traditional herbal hair oil, shared by a grandmother and her family."
  },
  {
   "img": "/static/img/stories/story-02.webp",
-  "youtube": "pRsQ7hZRYug",
-  "drive": "1ABl-RZ6hp0XfjicJD3UwWvNlfhnMEmk5"
+  "youtube": "abbqRgZY3Do",
+  "drive": "1ABl-RZ6hp0XfjicJD3UwWvNlfhnMEmk5",
+  "title": "How Vyra made a difference",
+  "kind": "Customer review",
+  "desc": "A customer shares what changed after using Vyra."
  },
  {
   "img": "/static/img/stories/story-03.webp",
-  "youtube": "nFIhJXbVyzQ",
-  "drive": "1Aaicyll1FmPJTwkwSCEY4_e9IS4AwfWf"
+  "youtube": "",
+  "drive": "1Aaicyll1FmPJTwkwSCEY4_e9IS4AwfWf",
+  "title": "Hair growth transformation",
+  "kind": "Customer story",
+  "desc": "Real customer story: hair growth journey with Vyra."
  },
  {
   "img": "/static/img/stories/story-04.webp",
-  "youtube": "r1SfVUoxXgU",
-  "drive": "1AGZT23-V6XoalRarwz50lDwt9SkfYedl"
+  "youtube": "pRsQ7hZRYug",
+  "drive": "1AGZT23-V6XoalRarwz50lDwt9SkfYedl",
+  "title": "Herbal Hair Oil and Shampoo",
+  "kind": "Customer review",
+  "desc": "A customer's review of the Vyra herbal hair oil and shampoo."
  },
  {
   "img": "/static/img/stories/story-05.webp",
-  "youtube": "T27bn6Z6YEY",
-  "drive": "1AHm7qINHVDM6qv5Nx-hYA7cnsZZSX1f8"
+  "youtube": "nFIhJXbVyzQ",
+  "drive": "1AHm7qINHVDM6qv5Nx-hYA7cnsZZSX1f8",
+  "title": "Men's hair fall experience",
+  "kind": "Customer review",
+  "desc": "An honest men's hair fall experience with Vyra Herbal Hair Oil."
  },
  {
   "img": "/static/img/stories/story-06.webp",
-  "youtube": "FgkH_CqJOjI",
-  "drive": "1AXdWcKTMicUFyhcS868lpINWeO_k78wc"
+  "youtube": "T27bn6Z6YEY",
+  "drive": "1AXdWcKTMicUFyhcS868lpINWeO_k78wc",
+  "title": "Say goodbye to bad hair days",
+  "kind": "Customer review",
+  "desc": "Real customer review of Vyra Herbal Hair Oil."
  },
  {
   "img": "/static/img/stories/story-07.webp",
-  "youtube": "",
-  "drive": "1R0gvRPJTdldYU0HE7qBa6dUPvwVIwR25"
+  "youtube": "FgkH_CqJOjI",
+  "drive": "1R0gvRPJTdldYU0HE7qBa6dUPvwVIwR25",
+  "title": "Hair fall control and regrowth",
+  "kind": "Customer testimonial",
+  "desc": "A customer's hair fall control and regrowth story with Vyra Herbals."
  }
 ]

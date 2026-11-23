@@ -1,6 +1,6 @@
-import { Layout, Icon, ProductCard, Crumbs, SectionHead, Marquee, RitualBanner, countIn } from '../components'
+import { Layout, Icon, ProductCard, Crumbs, SectionHead, Marquee, RitualBanner, StoryCard, videoLd, countIn } from '../components'
 import {
-  categories, concerns, families, bestSellers, newLaunches, sortFamilies, searchFamilies, beforeAfter, testimonials, reviews, site,
+  categories, concerns, families, bestSellers, newLaunches, sortFamilies, searchFamilies, beforeAfter, testimonials, reviews, stories, site,
   type Family, type SortKey, type Category, type Concern, inr,
 } from '../lib/catalog'
 
@@ -91,8 +91,12 @@ export const ConcernsPage = () => (
 
 export const ConcernPage = ({ c, sort }: { c: Concern; sort: SortKey }) => {
   const list = c.families.map((id) => families.find((f) => f.id === id)!).filter(Boolean)
+  const ld = c.faqs?.length ? {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: c.faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  } : undefined
   return (
-    <Layout title={`${c.name} care | Vyra Herbals`} desc={c.intro} active="categories">
+    <Layout title={`${c.name} care | Vyra Herbals`} desc={c.intro} active="categories" ld={ld}>
       <div class="wrap">
         <header class="page-head">
           <Crumbs items={[{ href: '/', label: 'Home' }, { href: '/concerns', label: 'Concerns' }, { label: c.name }]} />
@@ -105,6 +109,23 @@ export const ConcernPage = ({ c, sort }: { c: Concern; sort: SortKey }) => {
         </div>
         <div class="toolbar"><span>{list.length} products</span><Sort cur={sort} /></div>
         <Grid list={sortFamilies(list, sort)} />
+        <section class="expect" aria-labelledby="expect-title">
+          <h2 id="expect-title">What to expect, honestly</h2>
+          <p class="section__sub">Herbal care works through steady habit, not overnight. This is the timeline most customers tell us about.</p>
+          <ol>
+            <li><b>Week 1-2</b><span>Scalp feels cleaner and hair feels softer after oiling and washing.</span></li>
+            <li><b>Week 4-6</b><span>Routine becomes habit. Many customers notice less hair on the comb.</span></li>
+            <li><b>Week 8-12</b><span>This is when visible changes are usually judged. Keep oiling 2-3 times a week.</span></li>
+          </ol>
+          <p class="disclaimer">Results vary with hair type, diet and consistency. Vyra products are herbal hair care and are not a medical treatment. If hair loss is sudden or patchy, please consult a doctor.</p>
+        </section>
+        {c.faqs?.length ? (
+          <section class="faq" aria-labelledby="faq-title">
+            <h2 id="faq-title">Common questions</h2>
+            {c.faqs.map((f) => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}
+          </section>
+        ) : null}
+        <section class="ritual" aria-label="Talk to us"><h3>Not sure which to pick?</h3><p>Tell us your hair concern on WhatsApp and we will suggest a routine. No pressure.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn--light" href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent('Hi Vyra, I need help choosing for: ' + c.name)}`}>Ask on WhatsApp</a></div></section>
       </div>
     </Layout>
   )
@@ -142,13 +163,17 @@ export const BestSellers = ({ tab }: { tab: 'best' | 'new' }) => (
   </Layout>
 )
 
-export const ReviewsPage = ({ tab }: { tab: 'stories' | 'ba' }) => (
-  <Layout title="Customer reviews | Vyra Herbals" active="reviews">
+export const ReviewsPage = ({ tab }: { tab: 'stories' | 'ba' | 'videos' }) => (
+  <Layout title="Customer reviews | Vyra Herbals" active="reviews" ld={videoLd(stories)}>
     <div class="wrap">
       <header class="page-head"><Crumbs items={[{ href: '/', label: 'Home' }, { label: 'Reviews' }]} /><h1 class="h2">What customers say</h1><p class="section__sub">{reviews.length} product reviews and {testimonials.length} testimonials from customers across India.</p></header>
       <div class="tabs" data-tabs style="margin:10px 0 18px">
+        <button type="button" class={tab === 'videos' ? 'is-on' : ''} data-tab="videos">Videos</button>
         <button type="button" class={tab === 'stories' ? 'is-on' : ''} data-tab="stories">Testimonials</button>
         <button type="button" class={tab === 'ba' ? 'is-on' : ''} data-tab="ba">Before &amp; after</button>
+      </div>
+      <div data-panel="videos" hidden={tab !== 'videos'}>
+        <div class="videos-grid">{stories.map((s, i) => <StoryCard s={s} i={i} />)}</div>
       </div>
       <div data-panel="stories" hidden={tab !== 'stories'}>
         {site.testimonialShots.length > 0 && (<div class="tstack">{site.testimonialShots.map((s: string) => (<figure class="shot" data-zoom={s}><img src={s} alt="Customer testimonial" loading="lazy" /></figure>))}</div>)}
