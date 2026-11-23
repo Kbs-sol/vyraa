@@ -34,7 +34,7 @@ app.get('/product/:slug', (c) => {
 app.get('/search', (c) => c.html(<Search q={(c.req.query('q') || c.req.query('searchtext') || '').trim().slice(0, 80)} />))
 app.get('/best-sellers', (c) => c.html(<BestSellers tab={c.req.query('tab') === 'new' ? 'new' : 'best'} />))
 app.get('/new-launches', (c) => c.redirect('/best-sellers?tab=new'))
-app.get('/reviews', (c) => c.html(<ReviewsPage tab={c.req.query('tab') === 'ba' ? 'ba' : 'stories'} />))
+app.get('/reviews', (c) => c.html(<ReviewsPage tab={c.req.query('tab') === 'ba' ? 'ba' : c.req.query('tab') === 'videos' ? 'videos' : 'stories'} />))
 app.get('/testimonials', (c) => c.redirect('/reviews'))
 app.get('/track-order', (c) => c.html(<TrackOrder />))
 app.get('/preview-hero', (c) => c.html(previewHeroHtml))

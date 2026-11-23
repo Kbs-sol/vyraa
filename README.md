@@ -23,6 +23,12 @@ Bottom navigation (5): **Shop · Categories · Reviews · Best Sellers · Track 
 | `/track-order` | Order tracking hand-off |
 | `/about /blogs /blogs/:slug /faqs /contact /privacy-policy /terms-conditions` | 302 → `https://www.vyraherbals.com<path>` |
 
+## Recent changes (feat/hero-testimonials-seo)
+- Hero shows only the two before/after photos (no product, price or buttons).
+- Customer stories: each YouTube Short is matched to the right thumbnail (checked visually, 6 of 7 have a YouTube link; story 3 has none yet), captioned, and available at `/reviews?tab=videos` with `VideoObject` schema.
+- Concern pages: week-by-week expectations, FAQs with `FAQPage` schema, WhatsApp help button.
+- Research and plan: [docs/ORGANIC-TRAFFIC-STRATEGY.md](docs/ORGANIC-TRAFFIC-STRATEGY.md).
+
 ## Variant / combo selectors
 - Single axis (size): wrapping size pills above an outline **Add to bag** button, price line `₹249  100 ml`, category eyebrow.
 - Combos: native `<select>` "Oil / Shampoo sizes" with options such as `100 / 200 ml` … `500 / 500 ml`.
